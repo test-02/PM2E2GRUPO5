@@ -25,28 +25,8 @@ namespace PM2E2GRUPO5.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            // recargar();
             recargarObjetos();
         }
-        /*private async void recargarJson()
-        {
-            lblelementos.Text = "cargando...";
-            ListaSitios.ItemsSource = null;
-            elemento = null;
-
-            btnactualizar.IsEnabled = false;
-            btnreproduciraudio.IsEnabled = false;
-            btnvermapa.IsEnabled = false;
-
-            ListaSitios.ItemsSource = await SitioController.GetSitiosAsync();
-
-            int i = 0;
-            foreach (var item in ListaSitios.ItemsSource)
-            {
-                i++;
-            }
-            lblelementos.Text = "Registros ";
-        }*/
 
         private async void recargarObjetos()
         {

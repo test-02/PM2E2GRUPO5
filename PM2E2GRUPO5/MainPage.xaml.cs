@@ -97,13 +97,13 @@ namespace PM2E2GRUPO5
                 {
                     var image = await PadView.GetImageStreamAsync(SignatureImageFormat.Png);
 
-                    //Pasamos la firma a imagen a base 64
+                    //imagen a base 64
                     var mStream = (MemoryStream)image;
                     byte[] data = mStream.ToArray();
                     string base64Val = Convert.ToBase64String(data);
                     ImageBytes = Convert.FromBase64String(base64Val);
                 }
-                catch (Exception error)
+                catch (Exception ex)
                 {
                     await DisplayAlert("Aviso", "Se requiere la firma", "OK");
                     return;
@@ -116,7 +116,7 @@ namespace PM2E2GRUPO5
 
                     AudioBytes = File.ReadAllBytes(audioRecorderService.GetAudioFilePath());
                 }
-                catch (Exception error)
+                catch (Exception ex)
                 {
                     if (audiobandera)
                     {

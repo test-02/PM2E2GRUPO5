@@ -26,14 +26,6 @@ namespace PM2E2GRUPO5.Views
             latitud.Text = sitio.Latitud;
             longitud.Text = sitio.Longitud;
             descripcion.Text = sitio.Descripcion;
-
-            // PadView.Strokes = JsonConvert.DeserializeObject<IEnumerable<IEnumerable<Xamarin.Forms.Point>>>(sitio.firma);
-        }
-
-        private async void dibujarFirma()
-        {
-            //var sitios = await SitioController.GetSitiosAsync();
-            //PadView.Strokes = (IEnumerable<IEnumerable<Point>>)sitios;
         }
 
         private void limpiardescripcion_Clicked(object sender, EventArgs e)
@@ -87,9 +79,6 @@ namespace PM2E2GRUPO5.Views
                         FirmaDigital = ImageBytes,
                         firma = trazado
                     };
-
-                    /*var sitioController = new SitioController();
-                    await sitioController.ActualizarSitioAsync(sitio);*/
 
                     await SitioController.UpdateSitio(sitio);
                     await DisplayAlert("Aviso", "Sitio modificado con exito", "Aceptar");

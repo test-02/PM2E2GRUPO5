@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PM2E2GRUPO5.Views.PageListaUbicaciones"
              xmlns:Converters="clr-namespace:PM2E2GRUPO5.Converters"
-             
+             NavigationPage.HasNavigationBar="False"
              >
 
 
