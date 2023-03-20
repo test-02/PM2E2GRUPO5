@@ -1,6 +1,6 @@
 # Integrantes:
 
-- Óscar Antonio Diaz Maldonado 201910110363
+- Oscar Antonio Diaz Maldonado 201910110363
 
 - Kevin Emanuel Herrera Amaya 202010010385
 
