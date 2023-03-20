@@ -4,30 +4,24 @@
     $username = "root";
     $password = "";
 
-    $conexion=mysqli_connect($hostname, $username, $password, $database);
+    $datos=json_decode(file_get_contents("php://input"));
 
-    if (!$conexion) {
-        die("La conexión ha fallado: " . mysqli_connect_error());
-    } 
-    else
+    if(isset($datos))
     {
-    $id = $_POST['id'];
-    $descripcion = $_POST['descripcion'];
-    $latitud = $_POST['latitud'];
-    $longitud = $_POST['longitud'];
-    $firmadigital = $_POST['firmadigital'];
-    $trazado = $_POST['trazado'];
+        $id=$datos->id;
+        $descripcion=$datos->descripcion;
+        $latitud=$datos->latitud;
+        $longitud=$datos->longitud;
+        $firmadigital=$datos->firmadigital;
+        $trazado=$datos->trazado;
 
-    $sql = "UPDATE `sitios` SET descripcion='$descripcion', latitud='$latitud', longitud='$longitud', firmadigital='$firmadigital', trazado='$trazado' WHERE id='$id'";
-    $result = mysqli_query($conexion, $sql);
+        $conexion=mysqli_connect($hostname, $username, $password, $database);
 
-    if (!$result) {
-        echo "Los datos han sido actualizados correctamente.";
-    } else {
-        echo "Ha ocurrido un error al actualizar los datos: " . mysqli_error($conexion);
+        $insertar="UPDATE `sitios` SET `descripcion`='$descripcion',`latitud`='$latitud',`longitud`='$longitud',`firmadigital`='$firmadigital',`trazado`='$trazado' WHERE (`id`='$id')";
+
+        $resultado=mysqli_query($conexion, $insertar);
+
+        mysqli_close($conexion);
     }
-
-    mysqli_close($conexion);
-}
-
+    echo "Exitoso";
 ?>
