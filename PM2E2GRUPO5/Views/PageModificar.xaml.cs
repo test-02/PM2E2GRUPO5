@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using PM2E2GRUPO5.Controllers;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Newtonsoft.Json;
 
 namespace PM2E2GRUPO5.Views
 {
@@ -25,6 +26,14 @@ namespace PM2E2GRUPO5.Views
             latitud.Text = sitio.Latitud;
             longitud.Text = sitio.Longitud;
             descripcion.Text = sitio.Descripcion;
+
+            // PadView.Strokes = JsonConvert.DeserializeObject<IEnumerable<IEnumerable<Xamarin.Forms.Point>>>(sitio.firma);
+        }
+
+        private async void dibujarFirma()
+        {
+            //var sitios = await SitioController.GetSitiosAsync();
+            //PadView.Strokes = (IEnumerable<IEnumerable<Point>>)sitios;
         }
 
         private void limpiardescripcion_Clicked(object sender, EventArgs e)
@@ -34,34 +43,32 @@ namespace PM2E2GRUPO5.Views
 
         private async void btnactualizar_Clicked(object sender, EventArgs e)
         {
-            bool flag1 = false;
+            bool validacion = false;
 
             if (descripcion.Text == null || descripcion.Text == "")
             {
-                flag1 = true;
+                validacion = true;
                 await DisplayAlert("Aviso", "Se necesita una breve descripción de la ubicación.", "OK");
             }
 
-            if (!flag1)
+            if (!validacion)
             {
                 byte[] ImageBytes = null;
                 var firma = PadView.Strokes;
 
 
-                //obtenemos la firma
                 try
                 {
                     var image = await PadView.GetImageStreamAsync(SignatureImageFormat.Png);
 
-                    //Pasamos la firma a imagen a base 64
                     var mStream = (MemoryStream)image;
                     byte[] data = mStream.ToArray();
                     string base64Val = Convert.ToBase64String(data);
                     ImageBytes = Convert.FromBase64String(base64Val);
                 }
-                catch (Exception error)
+                catch (Exception ex)
                 {
-                    await DisplayAlert("Aviso", "No has ingresado tu firma", "OK");
+                    await DisplayAlert("Aviso", "Se requiere la firma nueva", "OK");
                     return;
                 }
 
@@ -81,22 +88,23 @@ namespace PM2E2GRUPO5.Views
                         firma = trazado
                     };
 
+                    /*var sitioController = new SitioController();
+                    await sitioController.ActualizarSitioAsync(sitio);*/
+
                     await SitioController.UpdateSitio(sitio);
-                    await DisplayAlert("Aviso", "Sitio modificado con éxito", "Aceptar");
+                    await DisplayAlert("Aviso", "Sitio modificado con exito", "Aceptar");
                     await Navigation.PopAsync();
                 }
                 catch (Exception error)
                 {
                     await DisplayAlert("Aviso", "" + error, "OK");
                 }
-
-
             }
         }
 
         private async void btneliminar_Clicked(object sender, EventArgs e)
         {
-            bool answer = await DisplayAlert("Aviso", "¿Seguro que desea eliminar el Registro?", "Confirmar", "Volver");
+            bool answer = await DisplayAlert("Aviso", "¿Seguro que desea eliminar el Registro?", "Confirmar", "Cancelar");
             if (answer)
             {
                 await SitioController.DeleteSite("" + _sitio.Id);

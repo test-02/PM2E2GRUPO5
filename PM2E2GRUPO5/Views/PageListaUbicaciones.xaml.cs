@@ -22,27 +22,46 @@ namespace PM2E2GRUPO5.Views
             InitializeComponent();
         }
 
-        protected async override void OnAppearing()
+        protected override void OnAppearing()
         {
             base.OnAppearing();
-            recargar();
+            // recargar();
+            recargarObjetos();
         }
-        private async void recargar()
+        /*private async void recargarJson()
         {
             lblelementos.Text = "cargando...";
             ListaSitios.ItemsSource = null;
             elemento = null;
+
             btnactualizar.IsEnabled = false;
             btnreproduciraudio.IsEnabled = false;
             btnvermapa.IsEnabled = false;
-            ListaSitios.ItemsSource = await SitioController.GetAllSite();
 
-            int c = 0;
+            ListaSitios.ItemsSource = await SitioController.GetSitiosAsync();
+
+            int i = 0;
             foreach (var item in ListaSitios.ItemsSource)
             {
-                c++;
+                i++;
             }
             lblelementos.Text = "Registros ";
+        }*/
+
+        private async void recargarObjetos()
+        {
+            lblelementos.Text = "cargando lista...";
+            ListaSitios.ItemsSource = null;
+            elemento = null;
+
+            btnactualizar.IsEnabled = false;
+            btnreproduciraudio.IsEnabled = false;
+            btnvermapa.IsEnabled = false;
+
+            var sitios = await SitioController.GetSitiosAsync();
+            ListaSitios.ItemsSource = sitios;
+
+            lblelementos.Text = "Registros";
         }
 
         private async void nuevaubicacion_Tapped(object sender, EventArgs e)
@@ -71,7 +90,7 @@ namespace PM2E2GRUPO5.Views
         private async void btnvermapa_Clicked(object sender, EventArgs e)
         {
             var sitio = (SitiosFirma)elemento.Item;
-            await Navigation.PushAsync(new PageMapa(Double.Parse(sitio.Latitud), Double.Parse(sitio.Longitud), sitio.Descripcion)); // Abre el Page de Mapa
+            await Navigation.PushAsync(new PageMapa(Double.Parse(sitio.Latitud), Double.Parse(sitio.Longitud), sitio.Descripcion));
 
 
         }
@@ -80,8 +99,6 @@ namespace PM2E2GRUPO5.Views
         {
             var sitio = (SitiosFirma)elemento.Item;
 
-            // Crea un archivo temporal y obtiene 
-            // su ruta:
             string archivoTemp = Path.GetTempFileName();
             File.WriteAllBytes(archivoTemp, sitio.AudioFile);
 

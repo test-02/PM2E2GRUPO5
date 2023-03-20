@@ -14,21 +14,17 @@ namespace PM2E2GRUPO5
     public partial class MainPage : ContentPage
     {
 
-        bool flag2 = false;
+        bool audiobandera = false;
 
         private readonly AudioRecorderService audioRecorderService = new AudioRecorderService();
 
-        SitioController sitiosApi;
-        List<SitiosFirma> ListaSitios;
         public MainPage()
         {
             InitializeComponent();
             checkInternet();
             getLocation();
 
-            sitiosApi = new SitioController();
-            ListaSitios = new List<SitiosFirma>();
-            flag2 = false;
+            audiobandera = false;
 
         }
 
@@ -38,77 +34,65 @@ namespace PM2E2GRUPO5
 
         }
 
-        private void Limpiardescripcion_Clicked(object sender, EventArgs e)
-        {
-            descripcion.Text = null;
-
-        }
-
         private async void btngrabarvoz_Clicked(object sender, EventArgs e)
         {
 
-            var status = await Permissions.RequestAsync<Permissions.Microphone>();
-            var status2 = await Permissions.RequestAsync<Permissions.StorageRead>();
-            var status3 = await Permissions.RequestAsync<Permissions.StorageWrite>();
-            if (status != PermissionStatus.Granted && status2 != PermissionStatus.Granted && status3 != PermissionStatus.Granted)
+            var microPhone = await Permissions.RequestAsync<Permissions.Microphone>();
+            var storageRead = await Permissions.RequestAsync<Permissions.StorageRead>();
+            var storageWrite = await Permissions.RequestAsync<Permissions.StorageWrite>();
+            if (microPhone != PermissionStatus.Granted && 
+                storageRead != PermissionStatus.Granted && 
+                storageWrite != PermissionStatus.Granted)
             {
-                return; // si no tiene los permisos no avanza
+                return;
             }
 
-            onda1.IsVisible = true;
-            onda2.IsVisible = true;
-            ondaespacio.IsVisible = false;
-            imgmicro.Source = "voice.png";
+            ondaespacio.IsVisible = false; // Configurar
             btnGuardar.IsEnabled = false;
             btngrabarvoz.IsVisible = false;
             btndetenervoz.IsVisible = true;
 
             await audioRecorderService.StartRecording();
 
-            flag2 = true;
+            audiobandera = true;
 
         }
 
         private async void btndetenervoz_Clicked(object sender, EventArgs e)
         {
 
-            onda1.IsVisible = false;
-            onda2.IsVisible = false;
             ondaespacio.IsVisible = true;
-            ondaespacio.Text = "¡Guardado!";
-            imgmicro.Source = "voiceoff.png";
             btnGuardar.IsEnabled = true;
             btngrabarvoz.IsVisible = true;
             btndetenervoz.IsVisible = false;
 
             await audioRecorderService.StopRecording();
+            ondaTexto.Text = "Audio Grabado";
 
         }
 
         private async void btnGuardar_Clicked(object sender, EventArgs e)
         {
+            bool validacion = false;
 
-            bool flag1 = false;
             if (latitud.Text == null || longitud.Text == null)
             {
-                flag1 = true;
-                await DisplayAlert("Error", "Se necesitan las coordenadas de su ubicación para guardar.", "OK");
+                validacion = true;
+                await DisplayAlert("Error", "Coordenadas de su ubicación requeridas para guardar.", "OK");
             }
 
-            if (descripcion.Text == null || descripcion.Text == "")
+            if (descripcion.Text == null || descripcion.Text.Trim() == "")
             {
-                flag1 = true;
+                validacion = true;
                 await DisplayAlert("Error", "Se necesita una breve descripción de la ubicación.", "OK");
             }
 
-            if (!flag1)
+            if (!validacion)
             {
                 byte[] ImageBytes = null;
                 byte[] AudioBytes = null;
                 var firma = PadView.Strokes;
 
-
-                //obtenemos la firma
                 try
                 {
                     var image = await PadView.GetImageStreamAsync(SignatureImageFormat.Png);
@@ -121,11 +105,10 @@ namespace PM2E2GRUPO5
                 }
                 catch (Exception error)
                 {
-                    await DisplayAlert("Aviso", "No has ingresado tu firma", "OK");
+                    await DisplayAlert("Aviso", "Se requiere la firma", "OK");
                     return;
                 }
 
-                //obtenemos el audio
                 try
                 {
                     var audio = audioRecorderService.GetAudioFileStream();
@@ -135,7 +118,7 @@ namespace PM2E2GRUPO5
                 }
                 catch (Exception error)
                 {
-                    if (flag2)
+                    if (audiobandera)
                     {
                         await DisplayAlert("Aviso", "No has hablado fuerte al grabar tu nota de voz", "OK");
                     }
@@ -149,12 +132,9 @@ namespace PM2E2GRUPO5
 
                 try
                 {
-                    byte[] a;
                     var serializer = new JavaScriptSerializer();
 
                     var b = serializer.Serialize(firma);
-
-                    a = null;
 
                     SitiosFirma sitio = new SitiosFirma
                     {
@@ -167,14 +147,14 @@ namespace PM2E2GRUPO5
                     };
 
                     await SitioController.CreateSite(sitio);
-                    await DisplayAlert("Aviso", "Sitio ingresado con éxito: " + sitio.Descripcion, "OK");
+                    await DisplayAlert("Aviso", "Sitio ingresado con exito: " + sitio.Descripcion, "OK");
                     PadView.Clear();
                     descripcion.Text = null;
 
                 }
-                catch (Exception error)
+                catch (Exception ex)
                 {
-                    await DisplayAlert("Aviso", "" + error, "OK");
+                    await DisplayAlert("Aviso", "" + ex, "OK");
                 }
 
 
@@ -197,42 +177,35 @@ namespace PM2E2GRUPO5
 
                 if (location != null)
                 {
-                    Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
                     latitud.Text = "" + location.Latitude;
                     longitud.Text = "" + location.Longitude;
-                    //await DisplayAlert("Aviso", "Si se leyó la ubicacion: "+location.Latitude +", "+location.Longitude, "OK");
                 }
                 else
                 {
-                    await DisplayAlert("Aviso", "El GPS está desactivado o no puede reconocerse", "OK");
+                    await DisplayAlert("Aviso", "El GPS está desactivado o no se pudo reconocer", "OK");
                     cleanLocation();
                 }
 
             }
             catch (FeatureNotSupportedException fnsEx)
             {
-                // Handle not supported on device exception
                 await DisplayAlert("Aviso", "Este dispositivo no soporta la versión de GPS utilizada", "OK");
                 cleanLocation();
             }
             catch (FeatureNotEnabledException fneEx)
             {
-                // Handle not enabled on device exception
-                //await DisplayAlert("Aviso", "Handle not enabled on device exception: "+fneEx, "OK");
                 await DisplayAlert("Aviso", "La ubicación está desactivada", "OK");
                 cleanLocation();
 
             }
             catch (PermissionException pEx)
             {
-                // Handle permission exception
                 await DisplayAlert("Aviso", "La aplicación no puede acceder a su ubicación.\n\n" +
                     "Habilite los permisos de ubicación en los ajustes del dispositivo", "OK");
                 cleanLocation();
             }
             catch (Exception ex)
             {
-                // Unable to get location
                 await DisplayAlert("Aviso", "No se ha podido obtener la localización (error de gps)", "OK");
                 cleanLocation();
             }
@@ -242,14 +215,12 @@ namespace PM2E2GRUPO5
         #region Internet
         public async void checkInternet()
         {
-            //await DisplayAlert("Aviso", "si", "OK");
             var current = Connectivity.NetworkAccess;
 
             if (current != NetworkAccess.Internet)
             {
-                // Connection to internet is available
-                await DisplayAlert("Aviso", "Usted no tiene acceso a Internet.\n" +
-                    "El acceso a Internet es requerido para el buen funcionamiento de la aplicación.", "OK");
+                await DisplayAlert("Aviso", "No tiene acceso a Internet.\n" +
+                    "Necesita teber acceso a internet para continuar.", "OK");
             }
 
         }

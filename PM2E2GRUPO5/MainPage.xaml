@@ -3,17 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PM2E2GRUPO5.MainPage"
              xmlns:forms="clr-namespace:SignaturePad.Forms;assembly=SignaturePad.Forms"
-             BackgroundColor="AliceBlue">
+>
     <ScrollView>
 
-        <StackLayout Margin="15,15,15,15">
+        <StackLayout Margin="10,10,10,10">
 
             <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Spacing="0">
                 <Frame Padding="0">
                     <Label Text="Nueva Ubicación"
                        HorizontalOptions="CenterAndExpand"
-                       BackgroundColor="#DAF7A6"
-                       TextColor="Black"                       
+                       BackgroundColor="Blue"
+                       TextColor="White"                       
                        FontAttributes="Bold"
                        Padding="10"/>
                 </Frame>
@@ -32,9 +32,7 @@
                 </Frame>
             </StackLayout>
 
-            <Image Source="uthlogo.png" WidthRequest="150" Margin="0,25,0,0"/>
-
-            <StackLayout BackgroundColor="Black" HorizontalOptions="Center" Padding="1">
+            <StackLayout BackgroundColor="Black" HorizontalOptions="Center" Padding="2" Margin="0,10,0,0">
                 <forms:SignaturePadView 
                 x:Name="PadView"
                     CaptionText=""
@@ -48,94 +46,86 @@
 
             <StackLayout Orientation="Vertical" Margin="25,25,25,0">
                 <StackLayout Orientation="Vertical">
-                    <Label Text="LATITUD" FontAttributes="Bold" TextColor="Black"></Label>
+                    <Label Text="Latitud" FontAttributes="Bold" TextColor="Black"></Label>
                     <Entry x:Name="latitud" IsReadOnly="True" ></Entry>
                 </StackLayout>
+                
                 <StackLayout Orientation="Vertical">
-                    <Label Text="LONGITUD" FontAttributes="Bold" TextColor="Black"></Label>
+                    <Label Text="Longitud" FontAttributes="Bold" TextColor="Black"></Label>
                     <Entry x:Name="longitud" IsReadOnly="True"></Entry>
                 </StackLayout>
+                
                 <StackLayout Orientation="Vertical">
                     <StackLayout Orientation="Horizontal">
-                        <Label Text="DESCRIBIR UBICACION:"
+                        <Label Text="Descripcion corta:"
                                FontAttributes="Bold" TextColor="Black"></Label>
-                        <ImageButton x:Name="Limpiardescripcion" Clicked="Limpiardescripcion_Clicked"  Source="delete.png" HeightRequest="20"
-                                     Margin="125,0,0,0"
-                                     BackgroundColor="Transparent"></ImageButton>
                     </StackLayout>
-                    <Editor x:Name="descripcion" HeightRequest="85"></Editor>
+                    <Editor x:Name="descripcion"></Editor>
                 </StackLayout>
             </StackLayout>
 
             <!--Grabar Nota de Voz-->
-            <StackLayout Orientation="Vertical" HorizontalOptions="Center" Margin="51,50,25,0">
-                <Label Text="Grabar Nota de Voz" HorizontalOptions="Start" FontAttributes="Bold" TextColor="Black"/>
+            <StackLayout Orientation="Vertical" Margin="10,20,10,0">
+                <Label Text="Grabar Nota de Voz" HorizontalOptions="Center" FontAttributes="Bold" TextColor="Black"/>
 
-                <StackLayout Orientation="Horizontal" Margin="0,0,15,0" Padding="0,0,10,0" Spacing="0">
-                    <Frame CornerRadius="10"  
-                           OutlineColor="Red" 
+                <StackLayout IsVisible="True" x:Name="ondaespacio" Orientation="Horizontal" Margin="0,0,0,0" Padding="0,0,0,0" Spacing="0">
+                    <Frame CornerRadius="10"
+                           BorderColor="Black" 
                            Padding="0"
-                           HasShadow="False">
-                        <StackLayout BackgroundColor="#DAF7A6" Padding="10,0,10,0" Orientation="Horizontal" Spacing="0">
-                            <Image x:Name="onda1" IsVisible="False" Source="grabando1.gif"
-                           WidthRequest="100"
-                           IsAnimationPlaying="True"/>
-                            <Image x:Name="onda2" IsVisible="False" Source="grabando1.gif"
-                           WidthRequest="100"
-                           IsAnimationPlaying="True"/>
-                            <Label x:Name="ondaespacio"
-                                   Text=""
+                           Margin="20,0,20,0"
+                           HasShadow="False"
+                           >
+                        <StackLayout BackgroundColor="Blue" Padding="10,0,10,0" Orientation="Horizontal" Spacing="0">
+                            <Label Text="Audio sin grabar"
+                                   x:Name="ondaTexto"
                                    HorizontalTextAlignment="Center"
                                    VerticalTextAlignment="Center"
                                    FontAttributes="Bold"
-                                   TextColor="Black"
+                                   TextColor="White"
                                    FontSize="Caption"
-                                   WidthRequest="300" IsVisible="True" Padding="25,0,25,0"/>
+                                   WidthRequest="300" Padding="25,0,25,0"/>
 
 
                         </StackLayout>
                     </Frame>
-                    <Image x:Name="imgmicro" Source="voiceoff.png" WidthRequest="30" Margin="10,0,0,0"></Image>
+                    
                     <Button x:Name="btngrabarvoz" Clicked="btngrabarvoz_Clicked"  Text="Grabar Voz"
-                        BackgroundColor="#DAF7A6"
-                        TextColor="Black"
-                        BorderWidth="3"
-                        BorderColor="Gray"
+                        BackgroundColor="Blue"
+                        TextColor="White"
+                        BorderWidth="1"
+                        BorderColor="Black"
                         FontAttributes="Bold"
                         FontSize="Caption"
                         HeightRequest="40"
-                        CornerRadius="40"
+                        CornerRadius="10"
+                        Margin="0,0,20,0"
                         />
                 </StackLayout>
 
-                <StackLayout Orientation="Horizontal">
-
-
-                    <Button IsVisible="False" x:Name="btndetenervoz" Clicked="btndetenervoz_Clicked"  Text="Detener"
-                        BackgroundColor="#DAF7A6"
-                        TextColor="Black"
-                         BorderWidth="3"
-                        BorderColor="Gray"
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                    <Button IsVisible="False" x:Name="btndetenervoz" Clicked="btndetenervoz_Clicked" Margin="0,10,0,0" Text="Detener"
+                        BackgroundColor="Blue"
+                        TextColor="White"
+                         BorderWidth="1"
+                        BorderColor="Black"
                         FontAttributes="Bold"
                         FontSize="Caption"
                         HeightRequest="40"
-                        CornerRadius="40"/>
+                        CornerRadius="10"/>
                 </StackLayout>
             </StackLayout>
 
-            <StackLayout Margin="50,50,50,50">
-                <Button x:Name="btnGuardar" Clicked="btnGuardar_Clicked"  Text="Salvar Ubicación"
-                        BackgroundColor="#DAF7A6"
-                        TextColor="Black"
-                         BorderWidth="3"
-                        BorderColor="Gray"
+            <StackLayout Margin="20,30,20,30">
+                <Button x:Name="btnGuardar" Clicked="btnGuardar_Clicked"  Text="Guardar registro"
+                        BackgroundColor="Blue"
+                        TextColor="White"
+                         BorderWidth="2"
+                        BorderColor="Black"
                         FontAttributes="Bold"
-                        FontSize="Caption"
-                        HeightRequest="40"
-                        CornerRadius="40"/>
+                        FontSize="Caption"/>
 
                 <Button IsVisible="False" x:Name="btnubicaciones" Clicked="btnUbicaciones_Clicked"  Text="Ubicaciones Salvadas"
-                        BackgroundColor="#86b7f3"
+                        BackgroundColor="Blue"
                         TextColor="White"
                         FontAttributes="Bold"
                         FontSize="Caption"
@@ -143,10 +133,7 @@
                         CornerRadius="40"/>
 
             </StackLayout>
-
-
         </StackLayout>
-
     </ScrollView>
 
 </ContentPage>

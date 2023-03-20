@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Nancy;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PM2E2GRUPO5.Models;
 using System;
@@ -14,63 +15,44 @@ namespace PM2E2GRUPO5.Controllers
     private static readonly string URL_SITIOS = "http://192.168.1.10/examenmovilgrupo5/";
     private static HttpClient client = new HttpClient();
 
-        /*public static async Task<List<SitiosFirma>> GetAllSite()
+        public static async Task<List<SitiosFirma>> GetSitiosAsync()
         {
-            List<SitiosFirma> listBooks = new List<SitiosFirma>();
+            List<SitiosFirma> sitios = new List<SitiosFirma>();
+
             try
             {
-                var uri = new Uri(URL_SITIOS + "GetSitios.php");
-                var response = await client.GetAsync(uri);
-                if (response.IsSuccessStatusCode)
+                using (HttpClient client = new HttpClient())
                 {
-                    var content = response.Content.ReadAsStringAsync().Result;
-                    listBooks = JsonConvert.DeserializeObject<List<SitiosFirma>>(content);
-                    return listBooks;
-                }
+                    HttpResponseMessage response = await client.GetAsync(URL_SITIOS + "Listar.php");
 
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error 1: " + ex.Message);
-            }
-
-            return listBooks;
-        }*/
-
-        public static async Task<List<SitiosFirma>> GetAllSite()
-        {
-            List<SitiosFirma> listBooks = new List<SitiosFirma>();
-            try
-            {
-                var uri = new Uri(URL_SITIOS + "GetSitios.php");
-                var response = await client.GetAsync(uri);
-                if (response.IsSuccessStatusCode)
-                {
-                    var content = await response.Content.ReadAsStringAsync();
-                    var jobject = JObject.Parse(content);
-                    var sitioArray = JArray.Parse(jobject["sitio"].ToString());
-                    foreach (var sitioObject in sitioArray)
+                    if (response.IsSuccessStatusCode)
                     {
-                        var sitio = new SitiosFirma();
-                        sitio.Id = Convert.ToInt32(sitioObject["id"]);
-                        sitio.Descripcion = sitioObject["descripcion"].ToString();
-                        sitio.Latitud = sitioObject["latitud"].ToString();
-                        sitio.Longitud = sitioObject["longitud"].ToString();
-                        listBooks.Add(sitio);
+                        string content = await response.Content.ReadAsStringAsync();
+                        sitios = JsonConvert.DeserializeObject<List<SitiosFirma>>(content);
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("GetSitios: " + ex.Message);
+                Console.WriteLine(ex.Message);
             }
-            return listBooks;
+
+            return sitios;
         }
-    public async static Task<bool> DeleteSite(string id)
+
+        public async Task<List<SitiosFirma>> GetAllAsync()
+        {
+            var httpClient = new HttpClient();
+            var json = await httpClient.GetStringAsync(URL_SITIOS + "Listar.php");
+            var sitios = JsonConvert.DeserializeObject<List<SitiosFirma>>(json);
+            return sitios;
+        }
+
+        public async static Task<bool> DeleteSite(string id)
     {
         try
         {
-            var uri = new Uri(URL_SITIOS + "eliminarsitio.php?id=" + id);
+            var uri = new Uri(URL_SITIOS + "Eliminar.php?id=" + id);
             var result = await client.GetAsync(uri);
             if (result.IsSuccessStatusCode)
             {
@@ -84,48 +66,69 @@ namespace PM2E2GRUPO5.Controllers
         return false;
     }
 
-    public async static Task<bool> CreateSite(SitiosFirma sitio)
-    {
-        try
+        public async static Task<bool> CreateSite(SitiosFirma sitio)
         {
-            Uri requestUri = new Uri(URL_SITIOS + "Create.php");
-            var jsonObject = JsonConvert.SerializeObject(sitio);
-            var content = new StringContent(jsonObject, Encoding.UTF8, "application/json");
-            var response = await client.PostAsync(requestUri, content);
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return true;
+                Uri requestUri = new Uri(URL_SITIOS + "Crear.php");
+                var client = new HttpClient();
+                var jsonObject = JsonConvert.SerializeObject(sitio);
+                var content = new StringContent(jsonObject, Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(requestUri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Create" + ex.Message);
-        }
-
-        return false;
-    }
-
-
- public async static Task<bool> UpdateSitio(SitiosFirma sitio)
-    {
-        try
-        {
-            Uri requestUri = new Uri(URL_SITIOS + "actualizarsitio.php");
-            var jsonObject = JsonConvert.SerializeObject(sitio);
-            var content = new StringContent(jsonObject, Encoding.UTF8, "application/json");
-            //var response = await client.PutAsync(requestUri, content);
-            var response = await client.PostAsync(requestUri, content);
-            if (response.IsSuccessStatusCode)
+            catch (Exception ex)
             {
-                return true;
+                Console.WriteLine(ex.Message);
             }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-        return false;
-    }
 
-}
+            return false;
+        }
+
+        public async static Task<bool> UpdateSitio(SitiosFirma sitio)
+        {
+            try
+            {
+                Uri requestUri = new Uri(URL_SITIOS + "actualizar2.php");
+                var jsonObject = JsonConvert.SerializeObject(sitio);
+                var content = new StringContent(jsonObject, Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(requestUri, content);
+                if (response.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return false;
+        }
+
+        /*public async Task<string> ActualizarSitioAsync(SitiosFirma sitio)
+        {
+            // var url = "http://192.168.1.10/examenmovilgrupo5/actualizar.php";
+
+            var client = new HttpClient();
+            var content = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("id", sitio.Id.ToString()),
+                new KeyValuePair<string, string>("descripcion", sitio.Descripcion),
+                new KeyValuePair<string, string>("latitud", sitio.Latitud),
+                new KeyValuePair<string, string>("longitud", sitio.Longitud),
+                new KeyValuePair<string, string>("firmadigital", Convert.ToBase64String(sitio.FirmaDigital)),
+                new KeyValuePair<string, string>("trazado", sitio.firma)
+            });
+
+            // var response = await client.PostAsync((url), content);
+            var response = await client.PostAsync((URL_SITIOS + "Actualizar.php"), content);
+            var responseString = await response.Content.ReadAsStringAsync();
+
+            return responseString;
+        }*/
+
+    }
 }
