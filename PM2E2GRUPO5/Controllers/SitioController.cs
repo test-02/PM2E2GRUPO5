@@ -61,7 +61,7 @@ namespace PM2E2GRUPO5.Controllers
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.Message);
+            Console.WriteLine("Eliminar: " + ex.Message);
         }
         return false;
     }

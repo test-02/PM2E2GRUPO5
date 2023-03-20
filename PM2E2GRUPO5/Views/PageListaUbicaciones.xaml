@@ -2,7 +2,9 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PM2E2GRUPO5.Views.PageListaUbicaciones"
-             xmlns:Converters="clr-namespace:PM2E2GRUPO5.Converters">
+             xmlns:Converters="clr-namespace:PM2E2GRUPO5.Converters"
+             
+             >
 
 
     <ContentPage.Resources>
@@ -38,10 +40,6 @@
                        Padding="10"/>
                 </Frame>
             </StackLayout>
-
-            <!--
-            <Image x:Name="gifcargando" HorizontalOptions="Center" HeightRequest="100" Source="Loading.gif" IsAnimationPlaying="True"></Image>
-            -->
 
             <StackLayout Margin="0,10,0,10" HorizontalOptions="Center" VerticalOptions="Center">
                 <Label IsVisible="True" HorizontalOptions="Center" x:Name="lblelementos" Text="" TextColor="Black" FontAttributes="Bold" FontSize="Large"/>

@@ -91,8 +91,6 @@ namespace PM2E2GRUPO5.Views
         {
             var sitio = (SitiosFirma)elemento.Item;
             await Navigation.PushAsync(new PageMapa(Double.Parse(sitio.Latitud), Double.Parse(sitio.Longitud), sitio.Descripcion));
-
-
         }
 
         private void btnreproduciraudio_Clicked(object sender, EventArgs e)
@@ -106,7 +104,6 @@ namespace PM2E2GRUPO5.Views
             audioPlayer.Play(archivoTemp);
 
             File.Delete(archivoTemp);
-
         }
     }
 }

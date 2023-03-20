@@ -35,7 +35,6 @@ namespace PM2E2GRUPO5.Views
                 if (location != null)
                 {
                     Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
-                    //await DisplayAlert("Aviso", "Si se leyó la ubicacion: "+location.Latitude +", "+location.Longitude, "OK");
                 }
                 else
                 {
@@ -50,7 +49,6 @@ namespace PM2E2GRUPO5.Views
             catch (FeatureNotEnabledException fneEx)
             {
                 // Handle not enabled on device exception
-                //await DisplayAlert("Aviso", "Handle not enabled on device exception: "+fneEx, "OK");
                 await DisplayAlert("Aviso", "La ubicación está desactivada", "OK");
 
             }
@@ -86,13 +84,16 @@ namespace PM2E2GRUPO5.Views
             try
             {
                 var location = new Location(_latitud, _longitud);
-                var options = new MapLaunchOptions { NavigationMode = NavigationMode.Driving };
+                var options = new MapLaunchOptions 
+                { 
+                    NavigationMode = NavigationMode.Driving 
+                };
 
                 await Xamarin.Essentials.Map.OpenAsync(location, options);
             }
             catch (Exception error)
             {
-                await DisplayAlert("Aviso", "Error: " + error, "OK");
+                await DisplayAlert("Aviso", "Error Draving: " + error, "OK");
             }
 
         }
